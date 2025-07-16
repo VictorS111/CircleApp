@@ -4,6 +4,7 @@ using CircleApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CircleApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250716145135_Added_Post_Comments")]
+    partial class Added_Post_Comments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,27 +58,6 @@ namespace CircleApp.Migrations
                     b.ToTable("Comments");
                 });
 
-            modelBuilder.Entity("CircleApp.Data.Models.Favorite", b =>
-                {
-                    b.Property<int>("PostId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.HasKey("PostId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Favorites");
-                });
-
             modelBuilder.Entity("CircleApp.Data.Models.Like", b =>
                 {
                     b.Property<int>("PostId")
@@ -114,9 +96,6 @@ namespace CircleApp.Migrations
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsPrivate")
-                        .HasColumnType("bit");
 
                     b.Property<int>("NrOfReports")
                         .HasColumnType("int");
@@ -170,25 +149,6 @@ namespace CircleApp.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CircleApp.Data.Models.Favorite", b =>
-                {
-                    b.HasOne("CircleApp.Data.Models.Post", "Post")
-                        .WithMany("Favorites")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("CircleApp.Data.Models.User", "User")
-                        .WithMany("Favorites")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Post");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("CircleApp.Data.Models.Like", b =>
                 {
                     b.HasOne("CircleApp.Data.Models.Post", "Post")
@@ -223,16 +183,12 @@ namespace CircleApp.Migrations
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Favorites");
-
                     b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("CircleApp.Data.Models.User", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Favorites");
 
                     b.Navigation("Likes");
 
