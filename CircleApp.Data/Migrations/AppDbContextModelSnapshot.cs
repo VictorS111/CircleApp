@@ -76,6 +76,32 @@ namespace CircleApp.Migrations
                     b.ToTable("Favorites");
                 });
 
+            modelBuilder.Entity("CircleApp.Data.Models.Hashtag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Count")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Hashtags");
+                });
+
             modelBuilder.Entity("CircleApp.Data.Models.Like", b =>
                 {
                     b.Property<int>("PostId")
@@ -115,6 +141,9 @@ namespace CircleApp.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<bool>("IsPrivate")
                         .HasColumnType("bit");
 
@@ -131,6 +160,54 @@ namespace CircleApp.Migrations
                     b.ToTable("Posts");
                 });
 
+            modelBuilder.Entity("CircleApp.Data.Models.Report", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reports");
+                });
+
+            modelBuilder.Entity("CircleApp.Data.Models.Story", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("DateCreated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Stories");
+                });
+
             modelBuilder.Entity("CircleApp.Data.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -142,6 +219,9 @@ namespace CircleApp.Migrations
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");
@@ -219,6 +299,36 @@ namespace CircleApp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("CircleApp.Data.Models.Report", b =>
+                {
+                    b.HasOne("CircleApp.Data.Models.Post", "Post")
+                        .WithMany("Reports")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CircleApp.Data.Models.User", "User")
+                        .WithMany("Reports")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CircleApp.Data.Models.Story", b =>
+                {
+                    b.HasOne("CircleApp.Data.Models.User", "User")
+                        .WithMany("Stories")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("CircleApp.Data.Models.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -226,6 +336,8 @@ namespace CircleApp.Migrations
                     b.Navigation("Favorites");
 
                     b.Navigation("Likes");
+
+                    b.Navigation("Reports");
                 });
 
             modelBuilder.Entity("CircleApp.Data.Models.User", b =>
@@ -237,6 +349,10 @@ namespace CircleApp.Migrations
                     b.Navigation("Likes");
 
                     b.Navigation("Posts");
+
+                    b.Navigation("Reports");
+
+                    b.Navigation("Stories");
                 });
 #pragma warning restore 612, 618
         }
